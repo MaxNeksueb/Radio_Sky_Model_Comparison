@@ -1488,3 +1488,198 @@ def plot3dnewV3(X,Y,Z, **kwargs):
 
 # plt.tight_layout()
 
+def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
+# #
+    close = kwargs.get('close', False)
+    dateFormat = kwargs.get('dateFormat',None)
+    figureWidth = kwargs.get('figureWidth',18)
+    figureHeight = kwargs.get('figureHeight',9.2)
+    slices = kwargs.get('slices',False)
+    periodicX = kwargs.get('periodicX',False)
+#
+    if dateFormat is not None:
+            rotateXlabels = kwargs.get('rotateXlabels',45)
+    else:
+        rotateXlabels = kwargs.get('rotateXlabels',0)
+    show = kwargs.get('show', True)
+    save = kwargs.get('save',False)
+    savePath = kwargs.get('savePath','./defaultName.png')
+    xlabel = kwargs.get('xlabel', None)
+    ylabel = kwargs.get('ylabel', None)
+    cbarLabel = kwargs.get('cbarLabel', None)
+    xmin = kwargs.get('xmin', np.min(X))
+    ymin = kwargs.get('ymin', np.min(Y))
+    zmin = kwargs.get('zmin', np.min(Z))
+    xmax = kwargs.get('xmax', np.max(X))
+    ymax = kwargs.get('ymax', np.max(Y))
+    zmax = kwargs.get('zmax', np.max(Z))
+    Cmin = kwargs.get('Cmin', np.min(Z))
+    Cmax = kwargs.get('Cmax', np.max(Z))
+    Tmin = kwargs.get('Tmin', Cmin)
+    Tmax = kwargs.get('Tmax', Cmax)
+    Cstep = kwargs.get('Cstep', (np.max(Cmax)-np.min(Cmin))/100)
+    Tstep = kwargs.get('Tstep', 9)
+    Ax_ylim = kwargs.get('Ax_ylim', None)
+    Ay_xlim = kwargs.get('Ay_xlim', None)
+    mainTitle = kwargs.get('mainTitle', None)
+    mainTitleFontSize = kwargs.get('mainTitleFontSize', 16)
+    legend = kwargs.get('legend', None)
+    xMajorLocator = kwargs.get('xMajorLocator', None)
+    xMinorLocator = kwargs.get('xMinorLocator', None)
+    yMajorLocator = kwargs.get('yMajorLocator', None)
+    yMinorLocator = kwargs.get('yMinorLocator', None)
+    xlabelFontsize  = kwargs.get('xlabelFontsize',14)
+    ylabelFontsize  = kwargs.get('xlabelFontsize',14)
+    cbarLabelFontsize = kwargs.get('cbarLabelFontsize',14)
+    extend = kwargs.get('extend','neither')
+
+    fig = plt.figure(num=1, figsize=(figureWidth,figureHeight), dpi=100)#, facecolor='w', edgecolor='k')
+    #fig = plt.subplots()#figsize=((figureWidth, figureHeight)))#, dpi=100)
+    
+    spec = gridspec.GridSpec(ncols=100, nrows=6, figure=fig)
+    if slices == True:
+        aZ = fig.add_subplot(spec[0:4, 0:80])
+    else:
+        aZ = fig.add_subplot(spec[0:6, 0:100])
+  #  aY = plt.gca() # and reverse
+ #   aY.set_xlim(aY.get_xlim()[::-1]) # and reverse
+    
+    
+    aZ.set_title(mainTitle, fontsize=mainTitleFontSize, fontweight="bold")
+    if dateFormat != None:
+        myFmt = mdates.DateFormatter(dateFormat)
+        aZ.xaxis.set_major_formatter(myFmt)
+        aZ.xaxis_date()
+    #
+    #colormap
+    #cmapT = plt.get_cmap('Greys')
+    cmapT = plt.get_cmap('jet')
+    print('cmap.T: ',cmapT.N)
+    lowerColorBarCut = kwargs.get('lowerColorBarCut',0.1)
+    upperColorBarCut = kwargs.get('upperColorBarCut', 1)
+    cmap = truncate_colormap(cmapT, lowerColorBarCut, upperColorBarCut)
+    cmap.set_under('white')
+    cmap.set_under('black')
+#    cmap.set_under(cmapT(0))
+    bounds = np.arange(Cmin,Cmax+Cstep,Cstep) # minimal, maximal values seen in color scale (range). By python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    #print('Bounds: ',bounds) #debug
+    norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
+    #print('cmap.N: ',cmap.N) #debug
+#    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
+    #
+    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im.set_edgecolor('face')
+    #
+    #
+    cbottom = kwargs.get('cbottom',0.129)
+    cheight = kwargs.get('cheight',0.8)
+    colorBarAxes = fig.add_axes([0.88, cbottom, 0.03, cheight]) #position of color bar [left, bottom, width, height]
+    cbarTicks = kwargs.get('cbarTicks',None)
+    if cbarTicks is None:
+#        cbarTicks = np.arange(Tmin,Tmax+Tstep,Tstep) # by default cbarTicks = bounds, especially when using discrete color scheme
+        print("tmins: ",Tmin," tmax: ",Tmax, " Tstep: ",Tstep)
+        cbarTicks = np.linspace(Tmin,Tmax,Tstep) # by default cbarTicks = bounds, especially when using discrete color scheme
+    print('cbarTicks: ',cbarTicks)
+    mpl.colorbar.ColorbarBase(colorBarAxes, cmap=cmap,norm=norm, extend=extend, ticks=cbarTicks )#extend='min', # extend will just point the ends , boundaries=bounds
+    colorBarAxes.set_ylabel(cbarLabel, fontsize=cbarLabelFontsize)
+    #cbar = plt.colorbar(im)
+    #cbar.set_label('Amplitude [ADC]', rotation=270, labelpad=10, y=0.5 )
+    #
+    interval = 4
+#
+    if xMajorLocator is not None:
+        if dateFormat != None:
+            aZ.xaxis.set_major_locator(xMajorLocator)
+        else:
+            aZ.xaxis.set_major_locator(MultipleLocator(xMajorLocator))
+    if xMinorLocator is not None:
+        aZ.xaxis.set_minor_locator(AutoMinorLocator(xMinorLocator))
+    if yMajorLocator is not None:
+        aZ.yaxis.set_major_locator(MultipleLocator(yMajorLocator))
+    if yMinorLocator is not None:
+        aZ.yaxis.set_minor_locator(AutoMinorLocator(yMinorLocator))
+    #
+    #aZ.tick_params(axis='x', which='major', length=15, width=2,labelsize=14)
+    aZ.tick_params(labelbottom=True, labeltop=False, labelleft=True, labelright=False, bottom=True, top=False, left=True, right=True)
+    aZ.tick_params(axis='x',rotation=rotateXlabels,which='major',length=15, width=2,labelsize=14)#, length=xtickLength[i], width=xtickWidth[i])")
+    aZ.tick_params(which='minor', length=4, width=1)
+    aZ.tick_params(axis='y', which='major', length=15, width=2,labelsize=14)
+    aZ.set_ylim(ymin,ymax)
+    aZ.set_ylabel(ylabel,fontsize=ylabelFontsize)
+    
+    if slices == True:
+        masked_data = np.ma.masked_array(Z, np.isnan(Z))
+        aX = fig.add_subplot(spec[4:6,0:80])
+        aY = fig.add_subplot(spec[0:4, 81:98])
+        xPlotData = masked_data.mean(axis=0)
+        if periodicX == True:
+            xPlotData = np.insert(xPlotData,len(xPlotData),xPlotData[0])
+        yPlotData = masked_data.mean(axis=1)
+        aX.plot(X[1,:],xPlotData, linestyle='-',marker='.')
+        aY.plot(yPlotData[::-1],Y[::-1,1], linestyle='-',marker='.') # rotate this one
+        aX.set_xlim(aZ.get_xlim())
+        aX.set_ylim(Ax_ylim)
+        aY.set_ylim(aZ.get_ylim())
+        aY.set_xlim(Ay_xlim)
+        aZ.set_xticklabels([])
+        aX.set_xlabel(xlabel,fontsize=xlabelFontsize)
+        aX.xaxis.set_minor_locator(aZ.xaxis.get_minor_locator())
+        aX.xaxis.set_major_locator(aZ.xaxis.get_major_locator())
+        aX.tick_params(axis='x',rotation=rotateXlabels,which='major',length=15, width=2,labelsize=14)#, length=xtickLength[i], width=xtickWidth[i])")
+        aX.tick_params(which='minor', length=4, width=1)
+        aY.tick_params(labelbottom=True, labeltop=False, labelleft=False, labelright=True, bottom=True, top=False, left=False, right=True)
+        aX.set_ylabel(cbarLabel)
+        aY.set_xlabel(cbarLabel)
+        aY.grid(True)
+        aX.grid(True)
+    else:
+        aZ.set_xlabel(xlabel,fontsize=xlabelFontsize)
+        
+    #aY = plt.gca() # and reverse
+    #fig.colorbar(im, aZ=aZ0)
+
+
+    #
+    #change the color of the 1st top tick
+    #
+    left = kwargs.get('left', 0.1) # the left side of the subplots of the figure old value = 0.2
+    bottom = kwargs.get('bottom', 0.15) # the bottom of the subplots of the figure
+    right = kwargs.get('right', 0.85) # the right side of the subplots of the figure
+    top = kwargs.get('top', 0.93) # the top of the subplots of the figure old value = 0.82
+    wspace = kwargs.get('wspace', 0.2) # the amount of width reserved for space between subplots, # expressed as a fraction of the average axis width
+    hspace = kwargs.get('hspace', 0.2) # the amount of height reserved for space between subplots, expressed as a fraction of the average axis height
+    #              
+    plt.subplots_adjust(left=left, bottom=bottom, right=right, top=top, wspace=wspace, hspace=hspace)
+    if save != False:
+        try:
+            savedir ='/'.join(save.split('/')[:-1])
+            os.makedirs(savedir)
+        except OSError:
+            print ("Creation of the directory failed (already exists?)")
+        else:
+            print ("Successfully created the directory")
+        plt.savefig(save, facecolor='w', transparent=False)
+        print("Figure has been saved to: ",save)
+    if close == True:
+        plt.close()
+    if show == True:
+        plt.show()
+    return None
+
+
+
+
+# fig, axes2d = plt.subplots(nrows=3, ncols=3,
+                           # sharex=True, sharey=True,
+                           # figsize=(6,6))
+
+# for i, row in enumerate(axes2d):
+    # for j, cell in enumerate(row):
+        # cell.imshow(np.random.rand(32,32))
+        # if i == len(axes2d) - 1:
+            # cell.set_xlabel("noise column: {0:d}".format(j + 1))
+        # if j == 0:
+            # cell.set_ylabel("noise row: {0:d}".format(i + 1))
+
+# plt.tight_layout()
+
