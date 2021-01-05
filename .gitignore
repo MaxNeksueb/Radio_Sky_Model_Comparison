@@ -1,3 +1,5 @@
 *.png
 *.gif
 *.pyc
+sky_maps/.ipynb_checkpoints/
+sky_maps/__pycache__/
