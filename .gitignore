@@ -3,5 +3,6 @@
 *.pyc
 *.pdf
 *.mp4
+*.csv
 sky_maps/.ipynb_checkpoints/
 sky_maps/__pycache__/
