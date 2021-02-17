@@ -1326,6 +1326,8 @@ def plot3dnewV3(X,Y,Z, **kwargs):
     Cmax = kwargs.get('Cmax', np.max(Z))
     Tmin = kwargs.get('Tmin', Cmin)
     Tmax = kwargs.get('Tmax', Cmax)
+    Blind_min = kwargs.get('Blind_min', None)
+    Blind_max = kwargs.get('Blind_max', None)
     Cstep = kwargs.get('Cstep', (np.max(Cmax)-np.min(Cmin))/100)
     Tstep = kwargs.get('Tstep', 9)
     mainTitle = kwargs.get('mainTitle', None)
@@ -1377,6 +1379,8 @@ def plot3dnewV3(X,Y,Z, **kwargs):
     im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
     im.set_edgecolor('face')
     #
+    if Blind_min is not None and Blind_max is not None:
+    	aZ.fill([0,360,360,0],[Blind_min,Blind_min,Blind_max,Blind_max], fill=False, hatch='//', edgecolor='r')
     #
     cbottom = kwargs.get('cbottom',0.129)
     cheight = kwargs.get('cheight',0.8)
