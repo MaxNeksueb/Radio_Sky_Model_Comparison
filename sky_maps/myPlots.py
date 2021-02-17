@@ -1517,6 +1517,7 @@ def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
     Cmax = kwargs.get('Cmax', np.max(Z))
     Tmin = kwargs.get('Tmin', Cmin)
     Tmax = kwargs.get('Tmax', Cmax)
+    Cmap = kwargs.get('Cmap', 'jet')
     Cstep = kwargs.get('Cstep', (np.max(Cmax)-np.min(Cmin))/100)
     Tstep = kwargs.get('Tstep', 9)
     Ax_ylim = kwargs.get('Ax_ylim', None)
@@ -1553,7 +1554,7 @@ def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
     #
     #colormap
     #cmapT = plt.get_cmap('Greys')
-    cmapT = plt.get_cmap('jet')
+    cmapT = plt.get_cmap(Cmap)
     print('cmap.T: ',cmapT.N)
     lowerColorBarCut = kwargs.get('lowerColorBarCut',0.1)
     upperColorBarCut = kwargs.get('upperColorBarCut', 1)
@@ -1561,13 +1562,15 @@ def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
     cmap.set_under('white')
     cmap.set_under('black')
 #    cmap.set_under(cmapT(0))
-    bounds = np.arange(Cmin,Cmax+Cstep,Cstep) # minimal, maximal values seen in color scale (range). By python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    Clim = max(abs(Cmin),abs(Cmax))
+#    bounds = np.arange(Cmin,Cmax+Cstep,Cstep) # minimal, maximal values seen in color scale (range). By python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    bounds = np.arange(-Clim,Clim+Cstep,Cstep)
     #print('Bounds: ',bounds) #debug
     norm = mpl.colors.BoundaryNorm(bounds, cmap.N)
     #print('cmap.N: ',cmap.N) #debug
 #    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
     #
-    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = -Clim ,vmax = Clim, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
     im.set_edgecolor('face')
     #
     #
@@ -1580,7 +1583,7 @@ def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
         print("tmins: ",Tmin," tmax: ",Tmax, " Tstep: ",Tstep)
         cbarTicks = np.linspace(Tmin,Tmax,Tstep) # by default cbarTicks = bounds, especially when using discrete color scheme
     print('cbarTicks: ',cbarTicks)
-    mpl.colorbar.ColorbarBase(colorBarAxes, cmap=cmap,norm=norm, extend=extend, ticks=cbarTicks )#extend='min', # extend will just point the ends , boundaries=bounds
+    mpl.colorbar.ColorbarBase(colorBarAxes, cmap=cmap, norm=norm, extend=extend, ticks=cbarTicks )# extend='min', # extend will just point the ends , boundaries=bounds
     colorBarAxes.set_ylabel(cbarLabel, fontsize=cbarLabelFontsize)
     #cbar = plt.colorbar(im)
     #cbar.set_label('Amplitude [ADC]', rotation=270, labelpad=10, y=0.5 )
