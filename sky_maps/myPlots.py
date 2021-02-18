@@ -1381,6 +1381,7 @@ def plot3dnewV3(X,Y,Z, **kwargs):
     #
     if Blind_min is not None and Blind_max is not None:
     	aZ.fill([0,360,360,0],[Blind_min,Blind_min,Blind_max,Blind_max], fill=False, hatch='//', edgecolor='r')
+    	aZ.fill([0,360,360,0],[65.,65.,90.,90.], fill=False, hatch='//', edgecolor='r')
     #
     cbottom = kwargs.get('cbottom',0.129)
     cheight = kwargs.get('cheight',0.8)
