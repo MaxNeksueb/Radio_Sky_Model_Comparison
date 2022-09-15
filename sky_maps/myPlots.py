@@ -991,7 +991,7 @@ def plot3d(X,Y,Z, **kwargs):
     #
     min_plot = 0 #ampmin*4
     #ampmax//(20)
-    im = ax.pcolormesh(X, Y, Z, cmap=cmap,vmin = zmin ,vmax = zmax, norm=norm) #ch0--500 ch1--8
+    im = ax.pcolormesh(X, Y, Z, cmap=cmap, norm=norm) #ch0--500 ch1--8 #,vmin = zmin ,vmax = zmax
     #
     #
     colorBarAxes = fig.add_axes([0.9, 0.129, 0.03, 0.8]) #[left, bottom, width, height]
@@ -1113,7 +1113,7 @@ def plot3dnew(X,Y,Z, **kwargs):
     print('cmap.N: ',cmap.N)
 #    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
     #
-    im = ax.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax) # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im = ax.pcolormesh(X, Y, Z, cmap=cmap, norm=norm) # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over #, vmin = Cmin ,vmax = Cmax
     #
     #
     colorBarAxes = fig.add_axes([0.9, 0.129, 0.03, 0.8]) #position of color bar [left, bottom, width, height]
@@ -1232,7 +1232,7 @@ def plot3dnewV2(X,Y,Z, **kwargs):
     #print('cmap.N: ',cmap.N) #debug
 #    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
     #
-    im = ax.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax) # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im = ax.pcolormesh(X, Y, Z, cmap=cmap, norm=norm) # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over #, vmin = Cmin ,vmax = Cmax
     #
     #
     cbottom = kwargs.get('cbottom',0.129)
@@ -1376,7 +1376,7 @@ def plot3dnewV3(X,Y,Z, **kwargs):
     #print('cmap.N: ',cmap.N) #debug
 #    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
     #
-    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = Cmin ,vmax = Cmax, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over #, vmin = Cmin ,vmax = Cmax
     im.set_edgecolor('face')
     #
     if Blind_min is not None and Blind_max is not None:
@@ -1575,7 +1575,7 @@ def plot3dnewV4(X,Y,Z, **kwargs): # copied from V3, changes in the subplots
     #print('cmap.N: ',cmap.N) #debug
 #    cmap = plt.get_cmap('jet') #gist_rainbow  PiYG' gist_ncar
     #
-    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, vmin = -Clim ,vmax = Clim, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over
+    im = aZ.pcolormesh(X, Y, Z, cmap=cmap, norm=norm, shading='auto') # by python default Cmin is Zmin, Cmax is Zmax, values < or > are subject of se_under, set_over # vmin = -Clim ,vmax = Clim
     im.set_edgecolor('face')
     #
     #
