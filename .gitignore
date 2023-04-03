@@ -6,8 +6,10 @@
 *.csv
 *.xcf
 *.pickle
+*.fits
 sky_maps/testrows.txt
 sky_maps/testcolumns.txt
 sky_maps/testfile.txt
 sky_maps/.ipynb_checkpoints/
 sky_maps/__pycache__/
+sky_maps/reference_maps/
